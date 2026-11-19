@@ -133,9 +133,53 @@ def build_station_map(conn, output_path: Path,
     combined = stations.copy()
 
     if extra_stations is not None and not extra_stations.empty:
+
+        # Normalize possible column names returned by the
+        # external/remote station query.
         extra = extra_stations.rename(
-            columns={"elevation": "elevation_m"}
+            columns={
+                "NET": "network",
+                "net": "network",
+                "network_code": "network",
+
+                "STA": "station",
+                "sta": "station",
+                "station_code": "station",
+
+                "LAT": "latitude",
+                "lat": "latitude",
+
+                "LON": "longitude",
+                "lon": "longitude",
+
+                "elevation": "elevation_m",
+                "elev": "elevation_m",
+
+                "site": "site_name",
+                "name": "site_name",
+            }
         ).copy()
+
+        # Check required fields before selecting them.
+        required = [
+            "network",
+            "station",
+            "latitude",
+            "longitude",
+        ]
+
+        missing = [
+            column
+            for column in required
+            if column not in extra.columns
+        ]
+
+        if missing:
+            raise ValueError(
+                "Extra station data is missing required columns: "
+                f"{missing}. Available columns: "
+                f"{list(extra.columns)}"
+            )
 
         for column in ["site_name", "elevation_m"]:
             if column not in extra.columns:
@@ -150,7 +194,7 @@ def build_station_map(conn, output_path: Path,
                 "elevation_m",
                 "site_name",
             ]
-        ]
+        ].copy()
 
         combined = pd.concat(
             [combined, extra],
@@ -184,6 +228,7 @@ def build_station_map(conn, output_path: Path,
         station = row["station"]
 
         elevation = row.get("elevation_m")
+
         elevation_text = (
             f"{float(elevation):.1f} m"
             if pd.notna(elevation)
@@ -198,8 +243,8 @@ def build_station_map(conn, output_path: Path,
             f"<b>{html.escape(network)}."
             f"{html.escape(station)}</b><br>"
             f"Site: {site}<br>"
-            f"Latitude: {row['latitude']:.5f}<br>"
-            f"Longitude: {row['longitude']:.5f}<br>"
+            f"Latitude: {float(row['latitude']):.5f}<br>"
+            f"Longitude: {float(row['longitude']):.5f}<br>"
             f"Elevation: {elevation_text}"
         )
 
