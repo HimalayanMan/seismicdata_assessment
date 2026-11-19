@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+*.egg-info/
+output/*
+!output/.gitkeep
+data/SEP/*.mseed
+data/DEMO/*.mseed
+*.sqlite
+*.db
+.DS_Store

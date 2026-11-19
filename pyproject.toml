@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seismicdata-assessment"
+version = "2.0.0"
+description = "MiniSEED ingestion, normalized SQL storage, FDSN station enrichment and seismic visualization"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
