@@ -98,7 +98,7 @@ seismicdata_assessment/
 ## Quick start — Google Colab
 
 ```python
-!git clone https://github.com/YOUR_GITHUB_USERNAME/seismicdata_assessment.git
+!git clone https://github.com/HimalayanMan/seismicdata_assessment.git
 %cd seismicdata_assessment
 !pip install -r requirements.txt
 ```
